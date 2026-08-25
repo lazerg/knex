@@ -72,6 +72,22 @@ describe('OracleDB Unit Tests', () => {
         }
       });
     });
+
+    describe('Connection Destruction', () => {
+      it('should not drop connections that were not acquired from a session pool', async () => {
+        const client = new Oracle_Client({ client: 'oracledb' });
+        const releaseOptions = [];
+        const connection = {
+          release: async function (options) {
+            releaseOptions.push(options);
+          },
+        };
+
+        await client.destroyRawConnection(connection);
+
+        expect(releaseOptions).to.deep.equal([undefined]);
+      });
+    });
   });
 
   describe('Name Generation', () => {
