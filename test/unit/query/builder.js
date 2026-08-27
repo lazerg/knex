@@ -11851,6 +11851,24 @@ describe('QueryBuilder', () => {
         );
       });
 
+      it('should set json value with a deeply nested path', () => {
+        testsql(
+          qb()
+            .jsonSet('address', '$.street.numbers[2].codes[1]', '5')
+            .from('users'),
+          {
+            pg: {
+              sql: 'select jsonb_set("address", ?, ?) from "users"',
+              bindings: ['{street,numbers,2,codes,1}', '5'],
+            },
+            cockroachdb: {
+              sql: 'select jsonb_set("address", ?, ?) from "users"',
+              bindings: ['{street,numbers,2,codes,1}', '5'],
+            },
+          }
+        );
+      });
+
       it('should set json value with pg path syntax', async function () {
         testsql(
           qb().jsonSet('address', '{street,numbers,2}', '5').from('users'),
