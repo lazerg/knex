@@ -11693,6 +11693,18 @@ describe('QueryBuilder', () => {
         });
       });
 
+      it('should extract json value with multiple array indexes', () => {
+        testsql(
+          qb().jsonExtract('name', '$.names[0].aliases[1]').from('users'),
+          {
+            cockroachdb: {
+              sql: 'select json_extract_path("name", ?, ?, ?, ?) from "users"',
+              bindings: ['names', '0', 'aliases', '1'],
+            },
+          }
+        );
+      });
+
       it('should extract json value with alias', () => {
         testsql(qb().jsonExtract('json_col', '$.name', 'name').from('users'), {
           pg: {
