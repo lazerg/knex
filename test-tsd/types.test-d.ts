@@ -183,3 +183,21 @@ knexInstance.with(
   'sql with positional bindings',
   [1]
 );
+
+// the column list is only read, so readonly arrays and tuples are accepted too
+const readonlyColumnList = ['id', 'parent_id'] as const;
+knexInstance.withRecursive(
+  'readonly columnList+callback',
+  readonlyColumnList,
+  (qb) => qb.select('id').from('table')
+);
+knexInstance.withRecursive(
+  'readonly columnList+qb',
+  readonlyColumnList,
+  knexInstance.select('id').from('table')
+);
+knexInstance.withRecursive(
+  'readonly columnList+sql',
+  readonlyColumnList,
+  'just sql'
+);
